@@ -22,6 +22,10 @@ class GameScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(STYLES[selected].bg);
     this.graphics = this.add.graphics();
     this.keys = this.input.keyboard.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT,SHIFT,SPACE');
+    this.touch = { x: 0, y: 0, fire: false, focus: false };
+    this.input.on('pointerdown', p => { if (p.y > this.scale.height * .72) { this.touch.fire = true; this.touch.x = Math.max(-1, Math.min(1, (p.x - this.scale.width * .22) / (this.scale.width * .28))); this.touch.y = Math.max(-1, Math.min(1, (p.y - this.scale.height * .86) / (this.scale.height * .14))); } });
+    this.input.on('pointermove', p => { if (p.isDown && p.y > this.scale.height * .72) { this.touch.fire = true; this.touch.x = Math.max(-1, Math.min(1, (p.x - this.scale.width * .22) / (this.scale.width * .28))); this.touch.y = Math.max(-1, Math.min(1, (p.y - this.scale.height * .86) / (this.scale.height * .14))); } });
+    this.input.on('pointerup', () => { this.touch.fire = false; this.touch.x = 0; this.touch.y = 0; });
     this.input.keyboard.on('keydown-ONE', () => this.changeStyle('dodonpachi'));
     this.input.keyboard.on('keydown-TWO', () => this.changeStyle('deathsmiles'));
     this.input.keyboard.on('keydown-THREE', () => this.changeStyle('guwange'));
@@ -41,9 +45,9 @@ class GameScene extends Phaser.Scene {
   }
   update(time, delta) {
     const dt = Math.min(.05, delta / 1000); elapsed += dt;
-    const k = this.keys; const input = { x: (k.D.isDown || k.RIGHT.isDown ? 1 : 0) - (k.A.isDown || k.LEFT.isDown ? 1 : 0), y: (k.S.isDown || k.DOWN.isDown ? 1 : 0) - (k.W.isDown || k.UP.isDown ? 1 : 0), focus: k.SHIFT.isDown };
+    const k = this.keys; const input = { x: this.touch.fire ? this.touch.x : (k.D.isDown || k.RIGHT.isDown ? 1 : 0) - (k.A.isDown || k.LEFT.isDown ? 1 : 0), y: this.touch.fire ? this.touch.y : (k.S.isDown || k.DOWN.isDown ? 1 : 0) - (k.W.isDown || k.UP.isDown ? 1 : 0), focus: this.touch.focus || k.SHIFT.isDown };
     state.player = movePlayer(state.player, input, dt, state);
-    if (k.SPACE.isDown && time - lastShot > (input.focus ? 150 : 85)) { lastShot = time; for (const angle of input.focus ? [-Math.PI / 2] : [-Math.PI / 2 - .1, -Math.PI / 2, -Math.PI / 2 + .1]) this.bullets.push({ x: state.player.x, y: state.player.y, angle, speed: input.focus ? 620 : 560, radius: 4, damage: input.focus ? 2 : 1 }); }
+    if ((k.SPACE.isDown || this.touch.fire) && time - lastShot > (input.focus ? 150 : 85)) { lastShot = time; for (const angle of input.focus ? [-Math.PI / 2] : [-Math.PI / 2 - .1, -Math.PI / 2, -Math.PI / 2 + .1]) this.bullets.push({ x: state.player.x, y: state.player.y, angle, speed: input.focus ? 620 : 560, radius: 4, damage: input.focus ? 2 : 1 }); }
     this.bullets.forEach(b => { b.x += Math.cos(b.angle) * b.speed * dt; b.y += Math.sin(b.angle) * b.speed * dt; });
     this.bullets = this.bullets.filter(b => b.y > -30 && b.y < 750 && b.x > -30 && b.x < 670);
     this.enemies = this.enemies.map(e => ({ ...e, x: e.motion === 'sine' ? e.anchorX + Math.sin(elapsed * 2 + e.phase) * 35 : e.x, y: e.y + 12 * dt }));
