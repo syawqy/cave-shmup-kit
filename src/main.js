@@ -70,7 +70,9 @@ class GameScene extends Phaser.Scene {
   }
 }
 
-const config = { type: Phaser.WEBGL, width: 640, height: 720, parent: 'app', backgroundColor: '#080b20', scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH }, scene: GameScene };
+// Canvas is the compatibility baseline for GitHub Pages/mobile browsers; it avoids
+// blank WebGL contexts on software-rendered or restricted devices.
+const config = { type: Phaser.CANVAS, width: 640, height: 720, parent: 'app', backgroundColor: '#080b20', render: { antialias: true, roundPixels: true }, scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH }, scene: GameScene };
 const game = new Phaser.Game(config);
 window.shmupGame = game;
 window.setStyle = name => { selected = name; game.scene.getScene('GameScene')?.changeStyle(name); };
