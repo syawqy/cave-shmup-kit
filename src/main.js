@@ -66,7 +66,7 @@ class GameScene extends Phaser.Scene {
   }
 }
 
-const config = { type: Phaser.AUTO, width: 640, height: 720, parent: 'app', backgroundColor: '#080b20', scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH }, scene: GameScene };
+const config = { type: Phaser.CANVAS, width: 640, height: 720, parent: 'app', backgroundColor: '#080b20', scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH }, scene: GameScene };
 const game = new Phaser.Game(config);
 window.shmupGame = game;
 window.setStyle = name => { selected = name; game.scene.getScene('GameScene')?.changeStyle(name); };
