@@ -66,7 +66,7 @@ class GameScene extends Phaser.Scene {
     for (const b of this.bullets) { g.fillStyle(0xffffff, 1); g.fillRect(b.x - 2, b.y - 10, 4, 14); }
     for (const e of this.enemies) { g.fillStyle(s.enemy, 1); g.fillTriangle(e.x, e.y - 16, e.x - 14, e.y + 12, e.x + 14, e.y + 12); g.lineStyle(2, s.accent, .5); g.strokeCircle(e.x, e.y, 18); }
     g.fillStyle(s.accent, 1); g.fillCircle(state.player.x, state.player.y, state.player.focused ? 8 : 13); g.fillStyle(0xffffff, 1); g.fillCircle(state.player.x, state.player.y, 3);
-    styleText.setText(`${s.title}  //  ${s.subtitle}`); scoreText.setText(`SCORE ${String(state.score).padStart(8, '0')}   GRAZE ${state.graze}`); comboText.setText(`CHAIN x${state.combo}   LIVES ${state.lives}`);
+    styleText?.setText(`${s.title}  //  ${s.subtitle}`); scoreText?.setText(`SCORE ${String(state.score).padStart(8, '0')}   GRAZE ${state.graze}`); comboText?.setText(`CHAIN x${state.combo}   LIVES ${state.lives}`);
   }
 }
 
